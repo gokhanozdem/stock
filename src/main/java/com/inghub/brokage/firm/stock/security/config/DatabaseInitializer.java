@@ -1,0 +1,45 @@
+package com.inghub.brokage.firm.stock.security.config;
+
+import com.inghub.brokage.firm.stock.repository.entity.Customer;
+import com.inghub.brokage.firm.stock.repository.entity.Role;
+import com.inghub.brokage.firm.stock.repository.CustomerRepository;
+import com.inghub.brokage.firm.stock.repository.RoleRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Component
+public class DatabaseInitializer implements CommandLineRunner {
+
+    private final RoleRepository roleRepository;
+    private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public DatabaseInitializer(RoleRepository roleRepository,
+                               CustomerRepository customerRepository,
+                               PasswordEncoder passwordEncoder) {
+        this.roleRepository = roleRepository;
+        this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public void run(String... args) {
+        if (roleRepository.count() == 0) {
+            roleRepository.saveAll(Arrays.asList(new Role("ADMIN"), new Role("CUSTOMER")));
+        }
+
+        if (!customerRepository.existsByUsername("admin")) {
+            Customer admin = new Customer("admin", passwordEncoder.encode("admin"), "Admin admin");
+
+            Role adminRole = roleRepository.findByName("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Admin role not found"));
+
+            admin.setRoles(List.of(adminRole));
+            customerRepository.save(admin);
+        }
+    }
+}

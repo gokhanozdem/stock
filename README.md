@@ -26,7 +26,6 @@ Spring Boot and H2 database have been used to create this project.
 * In the right, Maven logo will appear, then click it and open Maven menu
 * First double click to clean then install.
 
-  <img src="assets/image.png" width=220 height=250>
 
 * Run the application: Pick the StockApplication and hit the play button. 
 * No need to setup any environment variables, active profiles or VM options. 
@@ -41,6 +40,13 @@ Spring Boot and H2 database have been used to create this project.
 > * POST - /order/create
 > * GET - /order/list/{customerId}/{yyyy-MM-dd}
 > * DELETE - /order/{orderId}
-> * GET - /asset/list/{assetId}
 > * PUT - /order/complete/{orderId} - Bonus 2 in case study
+
+> * GET - /asset/list/{customerId}
 > * GET - /asset/list/search?assetName={assetName}&size={size}&usableSize={usableSize}
+
+> * POST - /auth/register - Bonus 1 in case study
+> * POST - /auth/login
+
+> * GET - /customers/list
+> * GET - /customers/{customerId}

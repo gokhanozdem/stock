@@ -32,11 +32,11 @@ public class OrderServiceImpl implements OrderService {
         validationForCreateOrder(order);
         checkAssetForCreateOrder(order);
         OrderEntity orderEntity = orderRepository.save(OrderEntity.builder()
-                .customerId(order.customerId())
-                .assetName(order.assetName())
-                .orderSide(order.orderSide())
-                .price(order.price())
-                .size(order.size())
+                .customerId(order.getCustomerId())
+                .assetName(order.getAssetName())
+                .orderSide(order.getOrderSide())
+                .price(order.getPrice())
+                .size(order.getSize())
                 .createDate(LocalDateTime.now())
                 .status(Status.PENDING)
                 .build());
@@ -88,12 +88,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order updateOrder(Order order, Status status) {
         OrderEntity orderEntity = orderRepository.save(OrderEntity.builder()
-                .orderId(order.orderId())
-                .customerId(order.customerId())
-                .assetName(order.assetName())
-                .orderSide(order.orderSide())
-                .price(order.price())
-                .size(order.size())
+                .orderId(order.getOrderId())
+                .customerId(order.getCustomerId())
+                .assetName(order.getAssetName())
+                .orderSide(order.getOrderSide())
+                .price(order.getPrice())
+                .size(order.getSize())
                 .createDate(LocalDateTime.now())
                 .status(status)
                 .build());
@@ -115,21 +115,21 @@ public class OrderServiceImpl implements OrderService {
         }
         validationForOthers(currentOrder);
 
-        if (currentOrder.orderSide().equals(OrderSide.BUY)) {
-            BigDecimal totalPrice = new BigDecimal(String.valueOf(currentOrder.size().multiply(currentOrder.price())));
-            Asset tryAsset = getAssetByCustomerIdAndAssetName(currentOrder.customerId(), TRY);
+        if (currentOrder.getOrderSide().equals(OrderSide.BUY)) {
+            BigDecimal totalPrice = new BigDecimal(String.valueOf(currentOrder.getSize().multiply(currentOrder.getPrice())));
+            Asset tryAsset = getAssetByCustomerIdAndAssetName(currentOrder.getCustomerId(), TRY);
             updateAsset(new Asset(tryAsset.assetId(),
                     tryAsset.customerId(),
                     tryAsset.assetName(),
                     tryAsset.size(),
                     tryAsset.usableSize().add(totalPrice)));
         } else {
-            Asset sellingAsset = getAssetByCustomerIdAndAssetName(currentOrder.customerId(), currentOrder.assetName());
+            Asset sellingAsset = getAssetByCustomerIdAndAssetName(currentOrder.getCustomerId(), currentOrder.getAssetName());
             updateAsset(new Asset(sellingAsset.assetId(),
                     sellingAsset.customerId(),
                     sellingAsset.assetName(),
                     sellingAsset.size(),
-                    sellingAsset.usableSize().add(currentOrder.size())));
+                    sellingAsset.usableSize().add(currentOrder.getSize())));
         }
 
         return updateOrder(currentOrder, Status.CANCELLED);
@@ -142,25 +142,25 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Order not found with id: " + orderId);
         }
         validationForOthers(currentOrder);
-        BigDecimal totalPrice = calculateTotalPrice(currentOrder.size(), currentOrder.price());
+        BigDecimal totalPrice = calculateTotalPrice(currentOrder.getSize(), currentOrder.getPrice());
 
-        if (currentOrder.orderSide().equals(OrderSide.BUY)) {
+        if (currentOrder.getOrderSide().equals(OrderSide.BUY)) {
             assetService.saveAsset(new Asset(null,
-                    currentOrder.customerId(),
-                    currentOrder.assetName(),
-                    currentOrder.size(),
-                    currentOrder.size()));
+                    currentOrder.getCustomerId(),
+                    currentOrder.getAssetName(),
+                    currentOrder.getSize(),
+                    currentOrder.getSize()));
 
-            Asset tryAsset = getAssetByCustomerIdAndAssetName(currentOrder.customerId(), TRY);
+            Asset tryAsset = getAssetByCustomerIdAndAssetName(currentOrder.getCustomerId(), TRY);
             updateAsset(new Asset(tryAsset.assetId(),
                     tryAsset.customerId(),
                     tryAsset.assetName(),
                     tryAsset.size().subtract(totalPrice),
                     tryAsset.usableSize()));
         } else { //SELL
-            Asset sellingAsset = getAssetByCustomerIdAndAssetName(currentOrder.customerId(), currentOrder.assetName());
+            Asset sellingAsset = getAssetByCustomerIdAndAssetName(currentOrder.getCustomerId(), currentOrder.getAssetName());
             BigDecimal assetSizeMinusUsable = sellingAsset.size().subtract(sellingAsset.usableSize());
-            int diffBetweenOrderSizeAndAssetSize = currentOrder.size().compareTo(assetSizeMinusUsable);
+            int diffBetweenOrderSizeAndAssetSize = currentOrder.getSize().compareTo(assetSizeMinusUsable);
 
             if (diffBetweenOrderSizeAndAssetSize < 0) {
                 throw new RuntimeException("You can just match " + assetSizeMinusUsable + " size for " + sellingAsset.assetName() + " asset.");
@@ -177,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
 
-            Asset tryAsset = getAssetByCustomerIdAndAssetName(currentOrder.customerId(), TRY);
+            Asset tryAsset = getAssetByCustomerIdAndAssetName(currentOrder.getCustomerId(), TRY);
             updateAsset(new Asset(tryAsset.assetId(),
                     tryAsset.customerId(),
                     tryAsset.assetName(),
@@ -188,27 +188,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public void checkAssetForCreateOrder(Order order) {
-        if (order.orderSide().equals(OrderSide.BUY)) {
-            Asset tryAsset = getAssetByCustomerIdAndAssetName(order.customerId(), TRY);
-            BigDecimal totalPrice = calculateTotalPrice(order.size(), order.price());
+        if (order.getOrderSide().equals(OrderSide.BUY)) {
+            Asset tryAsset = getAssetByCustomerIdAndAssetName(order.getCustomerId(), TRY);
+            BigDecimal totalPrice = calculateTotalPrice(order.getSize(), order.getPrice());
             if (tryAsset.usableSize().compareTo(totalPrice) < 0) {
-                throw new RuntimeException("Not Enough TRY Asset. TRY Asset: " + tryAsset.size() + ", Order Size: " + order.size() + ", Order Price: " + order.price() + ", Total: " + totalPrice);
+                throw new RuntimeException("Not Enough TRY Asset. TRY Asset: " + tryAsset.size() + ", Order Size: " + order.getSize() + ", Order Price: " + order.getPrice() + ", Total: " + totalPrice);
             }
             updateAsset(new Asset(tryAsset.assetId(),
                     tryAsset.customerId(),
                     tryAsset.assetName(),
                     tryAsset.size(),
                     tryAsset.usableSize().subtract(totalPrice)));
-        } else if (order.orderSide().equals(OrderSide.SELL)) {
-            Asset sellingAsset = getAssetByCustomerIdAndAssetName(order.customerId(), order.assetName());
-            if (sellingAsset.usableSize().compareTo(order.size()) < 0) {
-                throw new RuntimeException("Not Enough" + order.assetName() + " Asset. " + sellingAsset.assetName() + " Asset: " + sellingAsset.size() + ", Order Size: " + order.size());
+        } else if (order.getOrderSide().equals(OrderSide.SELL)) {
+            Asset sellingAsset = getAssetByCustomerIdAndAssetName(order.getCustomerId(), order.getAssetName());
+            if (sellingAsset.usableSize().compareTo(order.getSize()) < 0) {
+                throw new RuntimeException("Not Enough" + order.getAssetName() + " Asset. " + sellingAsset.assetName() + " Asset: " + sellingAsset.size() + ", Order Size: " + order.getSize());
             }
             updateAsset(new Asset(sellingAsset.assetId(),
                     sellingAsset.customerId(),
                     sellingAsset.assetName(),
                     sellingAsset.size(),
-                    sellingAsset.usableSize().subtract(order.size())));
+                    sellingAsset.usableSize().subtract(order.getSize())));
         }
     }
 
@@ -225,15 +225,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public void validationForCreateOrder(Order order) {
-        if (!(order.orderSide().equals(OrderSide.BUY) || order.orderSide().equals(OrderSide.SELL))) {
-            throw new RuntimeException("Order side is not valid. Order side is " + order.orderSide());
+        if (!(order.getOrderSide().equals(OrderSide.BUY) || order.getOrderSide().equals(OrderSide.SELL))) {
+            throw new RuntimeException("Order side is not valid. Order side is " + order.getOrderSide());
         }
     }
 
     public void validationForOthers(Order order) {
         validationForCreateOrder(order);
-        if (!order.status().equals(Status.PENDING)) {
-            throw new RuntimeException("Order status should be PENDING in order to complete. Status is " + order.status());
+        if (!order.getStatus().equals(Status.PENDING)) {
+            throw new RuntimeException("Order status should be PENDING in order to complete. Status is " + order.getStatus());
         }
     }
 }
