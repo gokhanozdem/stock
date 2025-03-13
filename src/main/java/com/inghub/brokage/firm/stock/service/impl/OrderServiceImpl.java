@@ -217,7 +217,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public BigDecimal calculateTotalPrice(BigDecimal size, BigDecimal price) {
-        return price.multiply(size);
+        return price.multiply(size).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public void updateAsset(Asset asset) {

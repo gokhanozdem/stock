@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -19,7 +17,6 @@ import java.util.stream.Collectors;
 public class AssetServiceImpl implements AssetService {
 
     private final AssetRepository assetRepository;
-    private Logger logger = Logger.getLogger(AssetServiceImpl.class.getName());
 
 
     @Override
@@ -84,8 +81,9 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public List<Asset> getAllAssetsByParam(String assetName, BigDecimal size, BigDecimal usableSize) {
         ArrayList<AssetEntity> assetArrayList = new ArrayList<>();
+        assetArrayList = new ArrayList<>(assetRepository.findAll());
         if (!(assetName == null || assetName.isEmpty())) {
-            assetArrayList = assetRepository.findAll().stream()
+            assetArrayList = assetArrayList.stream()
                     .filter(assetEntity -> assetName.equalsIgnoreCase(assetEntity.getAssetName()))
                     .collect(Collectors.toCollection(ArrayList::new));
         }
