@@ -42,7 +42,7 @@ Spring Boot and H2 database have been used to create this project.
 > * DELETE - /order/{orderId}
 > * PUT    - /order/complete/{orderId} - Bonus 2 in case study
 
-> * GET - /asset/create - can be used it to create customer's TRY assets for initially
+> * POST - /asset/create - can be used it to create customer's TRY assets for initially
 > * GET - /asset/list/{customerId}
 > * GET - /asset/list/search?assetName={assetName}&size={size}&usableSize={usableSize}
 
