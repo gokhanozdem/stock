@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -27,26 +27,26 @@ class AssetServiceImplTest {
     private AssetServiceImpl assetServiceImpl;
 
     List<AssetEntity> assetEntityList = List.of(
-            new AssetEntity(1, 1, "TRY", new BigDecimal("100000.00"), new BigDecimal("70000.00")),
-            new AssetEntity(2, 2, "TRY", new BigDecimal("200000.00"), new BigDecimal("150000.00")),
-            new AssetEntity(3, 3, "TRY", new BigDecimal("300000.00"), new BigDecimal("275000.00")),
-            new AssetEntity(4, 4, "TRY", new BigDecimal("400000.00"), new BigDecimal("400000.00")),
-            new AssetEntity(5, 5, "TRY", new BigDecimal("500000.00"), new BigDecimal("500000.00")),
-            new AssetEntity(6, 6, "TRY", new BigDecimal("600000.00"), new BigDecimal("600000.00")),
-            new AssetEntity(7, 7, "TRY", new BigDecimal("700000.00"), new BigDecimal("700000.00")),
-            new AssetEntity(8, 8, "TRY", new BigDecimal("800000.00"), new BigDecimal("800000.00")),
-            new AssetEntity(9, 9, "TRY", new BigDecimal("900000.00"), new BigDecimal("900000.00")),
-            new AssetEntity(10, 10, "TRY", new BigDecimal("1000000.00"), new BigDecimal("1000000.00")),
-            new AssetEntity(11, 1, "MGROS", new BigDecimal("100.00"), new BigDecimal("100.00")),
-            new AssetEntity(12, 1, "FROTO", new BigDecimal("200.00"), new BigDecimal("120.00")),
-            new AssetEntity(13, 2, "FROTO", new BigDecimal("300.00"), new BigDecimal("300.00")),
-            new AssetEntity(14, 2, "ASELS", new BigDecimal("400.00"), new BigDecimal("350.00")),
-            new AssetEntity(15, 3, "ASELS", new BigDecimal("500.00"), new BigDecimal("500.00"))
+            new AssetEntity(1, 2, "TRY", new BigDecimal("100000.00"), new BigDecimal("70000.00")),
+            new AssetEntity(2, 3, "TRY", new BigDecimal("200000.00"), new BigDecimal("150000.00")),
+            new AssetEntity(3, 4, "TRY", new BigDecimal("300000.00"), new BigDecimal("275000.00")),
+            new AssetEntity(4, 5, "TRY", new BigDecimal("400000.00"), new BigDecimal("400000.00")),
+            new AssetEntity(5, 6, "TRY", new BigDecimal("500000.00"), new BigDecimal("500000.00")),
+            new AssetEntity(6, 7, "TRY", new BigDecimal("600000.00"), new BigDecimal("600000.00")),
+            new AssetEntity(7, 8, "TRY", new BigDecimal("700000.00"), new BigDecimal("700000.00")),
+            new AssetEntity(8, 9, "TRY", new BigDecimal("800000.00"), new BigDecimal("800000.00")),
+            new AssetEntity(9, 10, "TRY", new BigDecimal("900000.00"), new BigDecimal("900000.00")),
+            new AssetEntity(10, 11, "TRY", new BigDecimal("1000000.00"), new BigDecimal("1000000.00")),
+            new AssetEntity(11, 2, "MGROS", new BigDecimal("100.00"), new BigDecimal("100.00")),
+            new AssetEntity(12, 2, "FROTO", new BigDecimal("200.00"), new BigDecimal("120.00")),
+            new AssetEntity(13, 3, "FROTO", new BigDecimal("300.00"), new BigDecimal("300.00")),
+            new AssetEntity(14, 3, "ASELS", new BigDecimal("400.00"), new BigDecimal("350.00")),
+            new AssetEntity(15, 4, "ASELS", new BigDecimal("500.00"), new BigDecimal("500.00"))
     );
 
     @Test
     void getAllAssetsByCustomerId_Success() {
-        when(assetRepositoryMock.findAllByCustomerId(anyInt())).thenReturn(assetEntityList.stream().filter(asset -> asset.getCustomerId().equals(1)).collect(Collectors.toList()));
+        when(assetRepositoryMock.findAllByCustomerId(anyInt())).thenReturn(assetEntityList.stream().filter(asset -> asset.getCustomerId().equals(2)).collect(Collectors.toList()));
         List<Asset> assetList = assetServiceImpl.getAllAssetsByCustomerId(anyInt());
         assertEquals("TRY", assetList.getFirst().assetName());
         assertEquals(3, assetList.size());

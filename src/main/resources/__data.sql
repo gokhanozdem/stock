@@ -1,6 +1,4 @@
 insert into asset (CUSTOMER_ID, ASSET_NAME, SIZE, USABLE_SIZE)
-values (1,'DMY',0.00, 0.00);
-insert into asset (CUSTOMER_ID, ASSET_NAME, SIZE, USABLE_SIZE)
 values (2,'TRY',100000.00, 69700.00);
 insert into asset (CUSTOMER_ID, ASSET_NAME, SIZE, USABLE_SIZE)
 values (3,'TRY',200000.00, 176000.00);

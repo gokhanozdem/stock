@@ -5,6 +5,7 @@ import com.inghub.brokage.firm.stock.repository.AssetRepository;
 import com.inghub.brokage.firm.stock.repository.entity.AssetEntity;
 import com.inghub.brokage.firm.stock.service.AssetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -48,6 +49,9 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     public void saveAsset(Asset asset) {
+        if (asset.customerId() == 1 && !asset.assetName().equalsIgnoreCase("ADMIN")) {
+            throw new AccessDeniedException("It is not allowed to do any operation with customer id : 1 . Please change customer id and try it again");
+        }
         assetRepository.save(AssetEntity.builder()
                 .customerId(asset.customerId())
                 .assetName(asset.assetName())

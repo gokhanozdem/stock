@@ -37,7 +37,8 @@ public class Customer {
     @JsonIgnore
     private Collection<Role> roles;
 
-    public Customer() {}
+    public Customer() {
+    }
 
     public Customer(String username, String password, String fullName) {
         this.username = username;

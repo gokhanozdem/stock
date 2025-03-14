@@ -21,7 +21,8 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     private Collection<Customer> customers;
 
-    public Role() {}
+    public Role() {
+    }
 
     public Role(String name) {
         this.name = name;

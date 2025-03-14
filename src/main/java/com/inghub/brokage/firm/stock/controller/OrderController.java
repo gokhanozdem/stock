@@ -2,8 +2,8 @@ package com.inghub.brokage.firm.stock.controller;
 
 import com.inghub.brokage.firm.stock.controller.dto.Order;
 import com.inghub.brokage.firm.stock.repository.entity.Customer;
-import com.inghub.brokage.firm.stock.service.impl.CustomerServiceImpl;
 import com.inghub.brokage.firm.stock.service.OrderService;
+import com.inghub.brokage.firm.stock.service.impl.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
@@ -67,6 +65,10 @@ public class OrderController {
             if (!currentCustomer.getId().equals(customerId)) {
                 throw new AccessDeniedException("You are not authorized to access this customer's data");
             }
+        }
+
+        if (isAdmin && customerId == 1) {
+            throw new AccessDeniedException("It is not allowed to do any operation with customer id : 1 . Please change customer id and try it again");
         }
 
         if (customerServiceImpl.getCustomerById(customerId).isEmpty()) {

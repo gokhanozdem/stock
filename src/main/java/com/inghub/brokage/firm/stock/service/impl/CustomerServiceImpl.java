@@ -1,10 +1,11 @@
 package com.inghub.brokage.firm.stock.service.impl;
 
-import com.inghub.brokage.firm.stock.repository.entity.Customer;
-import com.inghub.brokage.firm.stock.repository.entity.Role;
 import com.inghub.brokage.firm.stock.repository.CustomerRepository;
 import com.inghub.brokage.firm.stock.repository.RoleRepository;
+import com.inghub.brokage.firm.stock.repository.entity.Customer;
+import com.inghub.brokage.firm.stock.repository.entity.Role;
 import com.inghub.brokage.firm.stock.service.CustomerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,20 +13,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public CustomerServiceImpl(CustomerRepository customerRepository,
-                               RoleRepository roleRepository,
-                               PasswordEncoder passwordEncoder) {
-        this.customerRepository = customerRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public Customer registerNewCustomer(Customer customer) {
         if (customerRepository.existsByUsername(customer.getUsername())) {
